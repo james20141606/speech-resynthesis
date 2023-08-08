@@ -28,6 +28,7 @@ Requirements:
 
 #### For LJSpeech:
 1. Download LJSpeech dataset from [here](https://keithito.com/LJ-Speech-Dataset/) into ```data/LJSpeech-1.1``` folder.
+   
 2. Downsample audio from 22.05 kHz to 16 kHz and pad
    ```
    bash
