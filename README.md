@@ -28,15 +28,22 @@ Requirements:
 
 #### For LJSpeech:
 1. Download LJSpeech dataset from [here](https://keithito.com/LJ-Speech-Dataset/) into ```data/LJSpeech-1.1``` folder.
-   
-2. Downsample audio from 22.05 kHz to 16 kHz and pad
-   ```
-   bash
-   python ./scripts/preprocess.py \
-   --srcdir data/LJSpeech-1.1/wavs \
-   --outdir data/LJSpeech-1.1/wavs_16khz \
-   --pad
-   ```
+
+
+```
+wget -c https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
+tar -xvf LJSpeech-1.1.tar.bz2
+```
+
+
+1. Downsample audio from 22.05 kHz to 16 kHz and pad
+```
+bash
+python ./scripts/preprocess.py \
+--srcdir data/LJSpeech-1.1/wavs \
+--outdir data/LJSpeech-1.1/wavs_16khz \
+--pad
+```
 
 #### For VCTK:
 1. Download VCTK dataset from [here](https://datashare.ed.ac.uk/handle/10283/3443) into ```data/VCTK-Corpus``` folder.
@@ -52,11 +59,11 @@ Requirements:
 
 #### F0 Quantizer Model
 To train F0 quantizer model, use the following command:
-   ```bash
-   python -m torch.distributed.launch --nproc_per_node 8 train_f0_vq.py \
-   --checkpoint_path checkpoints/lj_f0_vq \
-   --config configs/LJSpeech/f0_vqvae.json
-   ```
+```bash
+python -m torch.distributed.launch --nproc_per_node 1 train_f0_vq.py \
+--checkpoint_path checkpoints/lj_f0_vq \
+--config configs/LJSpeech/f0_vqvae.json
+```
 Set ```<NUM_GPUS>``` to the number of availalbe GPUs on your machine.
 
 #### Resynthesis Model

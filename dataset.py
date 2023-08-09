@@ -376,6 +376,7 @@ class F0Dataset(torch.utils.data.Dataset):
                 padding = self.pad - (audio.shape[-1] % self.pad)
                 audio = np.pad(audio, (0, padding), "constant", constant_values=0)
             audio = audio / MAX_WAV_VALUE
+            #print (filename,audio.shape)
             audio = normalize(audio) * 0.95
             self.cached_wav = audio
             if sampling_rate != self.sampling_rate:

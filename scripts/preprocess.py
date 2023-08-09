@@ -14,26 +14,28 @@ import resampy
 import soundfile as sf
 import librosa
 from tqdm import tqdm
-
+import os
 
 def pad_data(p, out_dir, trim=False, pad=False):
-    data, sr = sf.read(p)
-    if sr != 16000:
-        data = resampy.resample(data, sr, 16000)
-        sr = 16000
-
-    if trim:
-        data, _ = librosa.effects.trim(data, 20)
-
-    if pad:
-        if data.shape[0] % 1280 != 0:
-            data = np.pad(data, (0, 1280 - data.shape[0] % 1280), mode='constant',
-                          constant_values=0)
-        assert data.shape[0] % 1280 == 0
-
     outpath = out_dir / p.name
     outpath.parent.mkdir(exist_ok=True, parents=True)
-    sf.write(outpath, data, sr)
+    if not os.path.exists(outpath):
+        data, sr = sf.read(p)
+        if sr != 16000:
+            data = resampy.resample(data, sr, 16000)
+            sr = 16000
+
+        if trim:
+            data, _ = librosa.effects.trim(data, 20)
+
+        if pad:
+            if data.shape[0] % 1280 != 0:
+                data = np.pad(data, (0, 1280 - data.shape[0] % 1280), mode='constant',
+                            constant_values=0)
+            assert data.shape[0] % 1280 == 0
+
+        
+        sf.write(outpath, data, sr)
 
 
 def main():
@@ -47,9 +49,11 @@ def main():
 
     files = list(Path(args.srcdir).glob(f'**/*{args.postfix}'))
     out_dir = Path(args.outdir)
-
+    print (files)
+    #for file in tqdm(files):
+    #    pad_data(file, out_dir, trim=args.trim, pad=args.pad)
     pad_data_ = partial(pad_data, out_dir=out_dir, trim=args.trim, pad=args.pad)
-    with Pool(40) as p:
+    with Pool(4) as p:
         rets = list(tqdm(p.imap(pad_data_, files), total=len(files)))
 
 
