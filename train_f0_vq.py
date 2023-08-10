@@ -25,7 +25,7 @@ from utils import scan_checkpoint, load_checkpoint, save_checkpoint, build_env, 
     AttrDict
 
 torch.backends.cudnn.benchmark = True
-
+#torch.distributed.init_process_group(backend="nccl")
 
 def train(rank, a, h):
     if h.num_gpus > 1:
